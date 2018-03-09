@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="col-lg-5">
+    <div class="chat" id="chatId">
+      <p *ngFor="let data of messages" class="text-primary">{{data.userName+' '+ [data.time] + ': ' +data.message}}</p>
+    </div>
+    <div>
+      Seen by: <span *ngFor="let seen of seenByUsers">{{seen}}, </span>
+    </div>
+    <div>
+      <br>
+      <input type="text" [(ngModel)]="userMessage" #messageInput
+             (keyup.enter)="sendMessage({message: messageInput.value, userName: userName})"
+             class="form-control" (click)="seenByUser()" autofocus>
+    </div>
+  </div>
+  <div>
+    <p>Active users: {{getNumberOfUsers()}}</p>
+    <p *ngFor="let user of activeUsers">{{user}}</p>
+  </div>
+</div>
+

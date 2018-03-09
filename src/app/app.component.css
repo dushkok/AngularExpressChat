@@ -1,0 +1,7 @@
+.chat {
+  height: 550px;
+  overflow: auto;
+  padding: 2px;
+  border: 2px solid gainsboro;
+  border-radius: 1%;
+}
