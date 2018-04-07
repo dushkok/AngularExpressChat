@@ -1,7 +1,20 @@
 .chat {
-  height: 550px;
   overflow: auto;
   padding: 2px;
-  border: 2px solid gainsboro;
-  border-radius: 1%;
+  font-family: 'Roboto', sans-serif;
+  height: 330px;
+}
+#cards {
+  height: 420px;
+
+}
+
+#cont {
+  opacity: 0.9;
+}
+
+#input {
+  min-width: 150px;
+  max-width: 1500px;
+  width: 100%;
 }

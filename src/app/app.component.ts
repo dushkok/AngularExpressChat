@@ -1,8 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs/Subscription';
 import {DataService} from './data.service';
+import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material';
+
 import * as $ from 'jquery';
-import {isUndefined} from "util";
+import {DialogComponent} from "./dialog/dialog.component";
 
 @Component({
   selector: 'app-root',
@@ -12,24 +14,20 @@ import {isUndefined} from "util";
 export class AppComponent implements OnInit, OnDestroy {
 
   messagesSub: Subscription;
-  activeUsersSub: Subscription;
   seenByUsersSub: Subscription;
   userName: string;
   userMessage: string;
   messages = [];
-  activeUsers = [];
   seenByUsers = [];
   seen: boolean;
+  dialogRef;
 
-  constructor(private dataService: DataService) {
+  constructor(private dataService: DataService, public dialog: MatDialog) {
   }
 
   ngOnInit() {
-    this.userName = prompt('Enter your name',);
-    this.dataService.sendUserInfo(this.userName);
-
+    this.openDialog();
     this.messagesSubInit();
-    this.activeUsersSubInit();
     this.seenByUsersSubInit();
 
   }
@@ -47,14 +45,6 @@ export class AppComponent implements OnInit, OnDestroy {
       });
   }
 
-  activeUsersSubInit(): void {
-    this.activeUsersSub = this.dataService.getActiveUsers()
-      .subscribe(data => {
-        this.activeUsers = data;
-      });
-
-  }
-
   seenByUsersSubInit(): void {
     this.seenByUsersSub = this.dataService.getSeenByUsers()
       .subscribe(data => {
@@ -62,8 +52,8 @@ export class AppComponent implements OnInit, OnDestroy {
       });
   }
 
-  getNumberOfUsers(): number {
-    return isUndefined(this.activeUsers) ? 0 : this.activeUsers.length;
+  seenByAnyone(): boolean {
+    return this.seenByUsers.length > 0;
   }
 
   sendMessage(data): void {
@@ -78,9 +68,19 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  openDialog() {
+    const dialogRef = this.dialog.open(DialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.userName = result;
+      this.dataService.sendUserInfo(this.userName);
+    });
+  }
+
   ngOnDestroy() {
     this.messagesSub.unsubscribe();
-    this.activeUsersSub.unsubscribe();
     this.seenByUsersSub.unsubscribe();
+    this.dialogRef.unsubscribe();
   }
 }
+
